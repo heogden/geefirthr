@@ -104,7 +104,7 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
     a <- lapply(z, function(a) exp(a))
     mu <- lapply(a, function(a) a/(1+a))
     var.mu <- lapply(mu, function(a) a * (1-a))
-    W <- lapply(var.mu, function(x) diag(as.vector(x)))
+    W <- lapply(var.mu, function(x) diag(as.vector(x), nrow = length(x), ncol = length(x)))
     for(i in 1:nc){
       e[[i]] <- (y[[i]]-mu[[i]])/sqrt(var.mu[[i]])
     }
@@ -117,7 +117,7 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
         p1 <- as.matrix(x)
         ni <- nrow(p1)
         s <- sum(p1)-sum(diag(p1))
-        mean.s <- s/(ni*(ni-1))
+        mean.s <- ifelse(ni == 1, 0, s/(ni*(ni-1)))
         return(mean.s)
 
       })
@@ -132,7 +132,7 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
       ni <- sapply(e, function(x) length(x))
       temp <- list()
       for(i in 1:nc){
-        temp[[i]] <- (1/(ni[i]-1)) * sum(e1[[i]] * e2[[i]])
+        temp[[i]] <- ifelse(ni[i] == 1, 0, (1/(ni[i]-1)) * sum(e1[[i]] * e2[[i]]))
       }
       alpha <- Reduce("+", temp)/nc
 
@@ -165,18 +165,18 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
 
     }
     for(i in 1:nc){
-      xi <- as.matrix(xx[[i]]); txi <- t(xi); W12 <- W[[i]]^(1/2)
+        xi <- as.matrix(xx[[i]]); txi <- t(xi); W12 <- W[[i]]^(1/2)
       part[[i]] <- txi %*% W12 %*% ginv(R[[i]]) %*% W12 %*% xi
     }
     I <- Reduce("+", part)/phi
-    Q <- lapply(mu, function(x) diag(0.5-as.vector(x)))
+    Q <- lapply(mu, function(x) diag(0.5-as.vector(x), nrow = length(x), ncol = length(x)))
     for(i in 1:nc){
       Z[[i]] <- list()
       xi <- as.matrix(xx[[i]])
       pi <- ncol(xi)
       for(j in 1:pi){
         temp <- as.vector(xi[,j])
-        Z[[i]][[j]] <- diag(temp)
+        Z[[i]][[j]] <- diag(temp, nrow = length(temp), ncol = length(temp))
       }
     }
 
@@ -218,7 +218,7 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
   z <- lapply(xx, function(a) as.matrix(a) %*% beta)
   mu <- lapply(z, function(a) exp(a)/(1+exp(a)))
   var.mu <- lapply(mu, function(a) a * (1-a))
-  W <- lapply(var.mu, function(x) diag(as.vector(x)))
+  W <- lapply(var.mu, function(x) diag(as.vector(x), nrow = length(x), ncol = length(x)))
   for(i in 1:nc){
     e[[i]] <- (y[[i]]-mu[[i]])/sqrt(var.mu[[i]])
   }
@@ -231,9 +231,8 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
       p1 <- as.matrix(x)
       nni <- nrow(p1)
       s <- sum(p1)-sum(diag(p1))
-      mean.s <- s/(nni*(nni-1))
+      mean.s <- ifelse(nni == 1, 0, s/(nni*(nni-1)))
       return(mean.s)
-
     })
     alpha <- mean(unlist(matr.sum))
     R <- lapply(cl.size, function(x) xch(x, alpha))
@@ -244,7 +243,7 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
     ni <- sapply(e, function(x) length(x))
     temp <- list()
     for(i in 1:nc){
-      temp[[i]] <- (1/(ni[i]-1)) * sum(e1[[i]] * e2[[i]])
+      temp[[i]] <- ifelse(ni[i] == 1, 0, (1/(ni[i]-1)) * sum(e1[[i]] * e2[[i]]))
     }
     alpha <- Reduce("+", temp)/nc
     R <- lapply(ni, function(x) ar1(x, alpha))
@@ -260,7 +259,7 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
                            matrix(0, nrow =  new.mat[i], ncol = max(ni)))
     }
     alpha <- Reduce("+", matr.s)/nc
-    R <- lapply(ni, function(x) alpha[1:x, 1:x])
+    R <- lapply(ni, function(x) alpha[1:x, 1:x, drop = FALSE])
   }
   if(corstr=="independence"){
     ni <- sapply(e, function(x) length(x))
@@ -339,7 +338,7 @@ xch <- function(n, rho){
     stop('n must be at least 1');
   }
   else if (n==1){
-    r <- 1;
+    r = matrix(1, nrow = 1, ncol = 1)
   }
   else if (n > 1){
     c1 = rep(rho,n-1);
