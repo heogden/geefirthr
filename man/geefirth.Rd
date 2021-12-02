@@ -4,38 +4,40 @@
 \alias{geefirth}
 \title{Fitting Firth-type GEE for  correlated binary data with separation or near-to-separation}
 \usage{
-geefirth(formula, id = id, data = parent.env(),
-  corstr = "independence")
+geefirth(
+  formula = formula(data),
+  id = id,
+  data = parent.frame(),
+  corstr = "independence",
+  est_dispersion = TRUE
+)
 }
 \arguments{
 \item{formula}{Similar as geeglm}
 
 \item{id}{cluster variable and requirs to be sorted}
 
-\item{data}{data frame that contains the variables mentioned in id and formula}
-
 \item{corstr}{working correlation structure, "independence" (default), "ar1", "unstr", "exchangeable".}
+
+\item{est_dispersion}{logical: should the dispersion parameter be estimated (TRUE, the default) or fixed at 1 (FALSE).}
 }
 \description{
 geefirth fits GEE with Firth-type penalization to provide
 bias-corrected finite  estimate of the regression coefficient  in case of separation or near-to-separation. In addition,
-it provides bias-correctedsandwich estimate of the standard error of the penalized GEE estimate.
+it provides bias-corrected sandwich estimate of the standard error of the penalized GEE estimate.
 }
 \examples{
 
-data(quasiDat)
+# loading data
+data(geefirth_data)
 
 # Fitting GEE for quasi-separated data
 
- geefirth(y ~ x + obstime, id=id,
-       data=quasiDat, corstr = "exchangeable");
-
-data(nearDat)
+geefirth(y ~ x + obstime, id=quasi_sep$id, data=quasi_sep, corstr = "exchangeable");
 
 # Fitting GEE for near to quasi-separated data
 
- geefirth(y ~ x + obstime, id=id,
-          data=nearDat, corstr = "exchangeable");
+geefirth(y ~ x + obstime, id=near_to_sep$id, data=near_to_sep, corstr = "exchangeable");
 
 }
 \author{

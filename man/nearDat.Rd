@@ -4,7 +4,9 @@
 \name{nearDat}
 \alias{nearDat}
 \title{nearDat}
-\format{An object of class \code{"data.frame"}}
+\format{
+An object of class \code{"data.frame"}
+}
 \usage{
 data(nearDat)
 }

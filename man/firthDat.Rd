@@ -4,7 +4,9 @@
 \name{firthDat}
 \alias{firthDat}
 \title{firthDat}
-\format{An object of class \code{"data.frame"}}
+\format{
+An object of class \code{"data.frame"}
+}
 \usage{
 data(firthDat)
 }

@@ -10,6 +10,7 @@
 #' @param id cluster variable and requirs to be sorted
 #'
 #' @param corstr working correlation structure, "independence" (default), "ar1", "unstr", "exchangeable".
+#' @param est_dispersion logical: should the dispersion parameter be estimated (TRUE, the default) or fixed at 1 (FALSE).
 #'
 #' @return NULL
 #' @author Momenul Haque Mondol \email{mmondol@isrt.ac.bd}, M. Shafiqur Rahman \email{
@@ -33,12 +34,14 @@
 #' @export
 
 
-geefirth <- function(formula = formula(data), id = id, data = parent.frame(), corstr="independence"){
+geefirth <- function(formula = formula(data), id = id, data = parent.frame(), corstr="independence",
+                     est_dispersion = TRUE){
   call <- match.call()
   m <- match.call(expand.dots = FALSE)
   m$R <- m$b <- m$tol <- m$maxiter <- m$link <- m$varfun <-
     m$corstr <- m$Mv <- m$silent <- m$contrasts <-
-    m$family <- m$scale.fix <- m$scale.value <- m$v4.4compat <- NULL
+        m$family <- m$scale.fix <- m$scale.value <- m$v4.4compat <- NULL
+  m$est_dispersion <- NULL
   if(is.null(m$id)) m$id <- as.name("id")
   if(!is.null(m$na.action) && m$na.action != "na.omit") {
     warning("Only 'na.omit' is implemented for gee\ncontinuing with 'na.action=na.omit'")
@@ -156,7 +159,10 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
       R <- lapply(ni, function(x) diag(x))
     }
 
-    phi <- mean(unlist(lapply(e, function(x) mean(x^2))))
+    if(est_dispersion)
+        phi <- mean(unlist(lapply(e, function(x) mean(x^2))))
+    else
+        phi <- 1
     for(i in 1:nc){
       V[[i]] <- phi * (W[[i]])^(1/2) %*% R[[i]] %*% (W[[i]])^(1/2)
     }
@@ -265,8 +271,6 @@ geefirth <- function(formula = formula(data), id = id, data = parent.frame(), co
     ni <- sapply(e, function(x) length(x))
     R <- lapply(ni, function(x) diag(x))
   }
-
-  phi <- mean(unlist(lapply(e, function(x) mean(x^2))))
 
   for(i in 1:nc){
     V[[i]] <- phi * (W[[i]])^(1/2) %*% R[[i]] %*% (W[[i]])^(1/2)

@@ -3,7 +3,6 @@
 \docType{package}
 \name{geefirthr}
 \alias{geefirthr}
-\alias{geefirthr-package}
 \title{Fitting Firth-type GEE for  correlated binary data with separation or near-to-separation}
 \description{
 geefirth fits GEE with Firth-type penalization to provide

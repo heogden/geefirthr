@@ -4,7 +4,9 @@
 \name{quasiDat}
 \alias{quasiDat}
 \title{a generated data}
-\format{An object of class \code{"data.frame"}}
+\format{
+An object of class \code{"data.frame"}
+}
 \usage{
 data(quasiDat)
 }
