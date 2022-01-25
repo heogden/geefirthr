@@ -1,17 +1,18 @@
 Package: geefirthr
 Title: Fitting Firth-type GEE for correlated binary data with
         separation or near-to-separation
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: as.person(c(
             "Momenul Mondol <mmondl@isrt.ac.bd> [aut, cre]",
-                  "Rahman Shafiq <shafiq@isrt.ac.bd> [aut]"
+                  "Rahman Shafiq <shafiq@isrt.ac.bd> [aut]",
+		  "Helen Ogden <heogden12@gmail.com> [ctb]"
                   ))
 Description: geefirth provides finite and less biased estimate than gee in case of separation or near to separation.
 License: GPL-2
 Imports: MASS
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2018-11-05 11:22:24 UTC; mlatif
 Author: Momenul Mondol [aut, cre],
